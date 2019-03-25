@@ -25,11 +25,13 @@
 			<artifactId>core</artifactId>
 			<version>3.4.0</version>
 		</dependency>
+		<!--newly added from conor sample-->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.4.6</version>
 		</dependency>
+		<!--newly added from conor sample-->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
