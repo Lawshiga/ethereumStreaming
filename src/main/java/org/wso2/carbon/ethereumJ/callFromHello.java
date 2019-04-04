@@ -69,6 +69,8 @@ public class callFromHello {
                 web3j, credentials,
                 ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT).send();
 
+
+
         String contractAddress = contract.getContractAddress();
         log.info("Smart contract deployed to address " + contractAddress);
 

@@ -30,6 +30,7 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.concurrent.ExecutionException;
 
@@ -81,6 +82,13 @@ public class ethereumMethod {
         // Web3j web3j = new JsonRpc2_0Web3j(httpServiceProvider.getService(url));
         log.info("Connected to Ethereum client version: "
                 + web3j.web3ClientVersion().send().getWeb3ClientVersion());
+
+        File file = new File("/home/lawshiqa/project1/blkchain/keystore");
+        String password = "password@123";
+        String fileName = WalletUtils.generateFullNewWalletFile(password,file);
+        System.out.println(fileName);
+        log.info("A new wallet is created");
+
         Credentials credentials =
                 WalletUtils.loadCredentials(
                         "seed",
@@ -95,6 +103,9 @@ public class ethereumMethod {
                 .sendAsync().get();
         log.info("Transaction complete : "
                 + transferReceipt.getTransactionHash());
+
+        Thread.sleep(10000);
+
     }
 }
 

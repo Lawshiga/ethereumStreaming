@@ -23,7 +23,7 @@ public class deployContract {
     public static void main(String[] args) throws Exception {
 
         Web3j web3 = Web3j.build(new HttpService());
-
+        System.out.println("netversion+++++++++++++ " + web3.netVersion().send().getNetVersion());
 //        newly added
         SolidityFunctionWrapperGenerator.main(Arrays.asList(
                 "src/main/solidity/forest/Forest.bin", // binary file location

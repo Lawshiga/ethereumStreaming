@@ -68,5 +68,10 @@
 			<artifactId>codegen</artifactId>
 			<version>3.4.0</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+    </dependencies>
 </project>

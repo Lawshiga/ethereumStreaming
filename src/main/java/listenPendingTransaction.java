@@ -36,8 +36,9 @@ public class listenPendingTransaction {
          web3j.pendingTransactionObservable().subscribe(tx -> {
 
             LOGGER.info("New tx: id={}, block={}, from={}, to={}, value={}", tx.getHash(), tx.getBlockHash(), tx.getFrom(), tx.getTo(), tx.getValue().intValue());
-        });
-    }
 
+        });
+
+    }
 
 }

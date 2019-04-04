@@ -23,7 +23,7 @@ import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
-import rx.Observable;//library for composing asynchronous and event-based programs by using observable sequence
+import rx.Observable;
 import rx.Subscription;
 
 import java.math.BigDecimal;
@@ -31,7 +31,7 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.concurrent.CountDownLatch;//allow one or more thread to wait for a particular operation to complete
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -73,6 +73,7 @@ public class listenForBlocks {
 
             //operate upon the emissions and notifications from an Observable when subscribe is called
             //find out what is the difference between true & false
+            //the false parameter specifies that we only want the blocks, not the embedded transactions too
             Subscription subscription = web3j.blockObservable(false).subscribe(block -> { //This blockObservable will now emit a block object to the subscriber each time a new block is appended to the Ethereum blockchain.
                 log.info("Sweet, block number " + block.getBlock().getNumber()
                         + " has just been created");
@@ -95,7 +96,17 @@ public class listenForBlocks {
                                 block.getTimestamp()
                                         .longValueExact()).atZone(ZoneId.of("UTC")).toLocalDateTime();//Coordinated Universal Time (UTC)
                         int transactionCount = block.getTransactions().size();
-                        log.info("block.getTransaction() :::" + block.getTransactions());
+//                        String author = block.getAuthor();
+//                        String miner = block.getMiner();
+//                        BigInteger blockNumber = block.getNumber();
+//                        List trasactions = block.getTransactions();
+//                        BigInteger size = block.getSize();
+//                        log.info("Author of the block :::::::::::::;", author);
+//                        log.info("Miner of the block::::::::::::;;;;", miner);
+//                        log.info("Block number ::::::::::;", blockNumber);
+//                        log.info("List of transactions:::::::::::::", trasactions);
+//                        log.info("Block size::::::::::::::", size);
+//                        log.info("block.getTransaction() :::" + block.getTransactions());
                         log.info("transaction count for block.getTransaction().size():::::::::::::::::" + transactionCount);
                         String hash = block.getHash();
                         log.info("getting timestamp::::::::::::::::::" + timestamp);

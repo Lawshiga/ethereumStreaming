@@ -44,7 +44,8 @@ public class listenForTransaction {
 
         web3j.transactionObservable().subscribe(tx -> {
 
-            LOGGER.info("New tx: id={}, block={}, from={}, to={}, value={}", tx.getHash(), tx.getBlockHash(), tx.getFrom(), tx.getTo(), tx.getValue().intValue());
+
+            LOGGER.info("New tx: transactionHash={}, blockHash={}, from={}, blckN={} to={}, value={}, nonce={}, String={}, V={}, gasprice={}, gas={}, publickey={}, inputString={}, raw={}", tx.getHash(), tx.getBlockHash(), tx.getFrom(), tx.getBlockNumber(), tx.getTo(), tx.getValue().intValue(), tx.getNonce(), tx.getS(), tx.getV(), tx.getGasPrice(), tx.getGas(), tx.getPublicKey(), tx.getInput());
 
             try {
 

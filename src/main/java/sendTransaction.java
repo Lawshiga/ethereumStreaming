@@ -48,10 +48,12 @@ public class sendTransaction {
         //check connection by getting the node version
         log.info("Connected to Ethereum client version: "
                 + web3j.web3ClientVersion().send().getWeb3ClientVersion());//This will make a synchronous request, by changing send() to sendAsync() or observable() you can perform async requests.
-        Credentials credentials =
-                WalletUtils.loadCredentials(
-                        "seed",
-                        "/home/lawshiqa/project1/blkchain/keystore/UTC--2019-02-21T09-39-23.093774268Z--e947eb0ede38da5b47c45ae6b8c09256b95012e0");
+//        Credentials credentials =
+//                WalletUtils.loadCredentials(
+//                        "seed",
+//                        "/home/lawshiqa/project1/blkchain/keystore/UTC--2019-02-21T09-39-23.093774268Z--e947eb0ede38da5b47c45ae6b8c09256b95012e0");
+        Credentials credentials = WalletUtils.loadCredentials("seed", "/home/lawshiqa/project1/blkchain/keystore/UTC--2019-02-21T09-39-23.093774268Z--e947eb0ede38da5b47c45ae6b8c09256b95012e0");
+
         log.info("Credentials loaded with the address::::" + credentials.getAddress());
        log.info("Sending Ether");
 
