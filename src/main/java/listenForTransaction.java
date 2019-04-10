@@ -23,10 +23,12 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthCoinbase;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.http.HttpService;
+import org.web3j.protocol.websocket.WebSocketService;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.ConnectException;
+import java.util.concurrent.Executors;
 
 //Source ---> listen for transaction
 
@@ -35,12 +37,19 @@ public class listenForTransaction {
     private static final Logger LOGGER = LoggerFactory.getLogger(listenForTransaction.class);
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ConnectException {
         new listenForTransaction().run();
     }
 
-    private void run() {
-        Web3j web3j = Web3j.build(new HttpService());
+    private void run() throws ConnectException {
+
+        //        Web3j web3j = Web3j.build(new HttpService());
+
+        String url1 = "ws://localhost:8546/";
+        long pollingInterval = 30000;
+        WebSocketService web3jService = new WebSocketService(url1, true);
+        web3jService.connect();
+        Web3j web3j = Web3j.build(web3jService, pollingInterval, Executors.newSingleThreadScheduledExecutor());
 
         web3j.transactionObservable().subscribe(tx -> {
 

@@ -21,17 +21,19 @@ import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.Transaction;
-import org.web3j.protocol.http.HttpService;
+import org.web3j.protocol.websocket.WebSocketService;
 import org.web3j.utils.Convert;
 import rx.Observable;
 import rx.Subscription;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.ConnectException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,10 +53,18 @@ public class listenForBlocks {
         private static Logger log = LoggerFactory.getLogger(listenForBlocks.class);
 
         private final Web3j web3j;
+    private  ScheduledExecutorService scheduledExecutorService;
 
-        public listenForBlocks() {
+    public listenForBlocks() throws ConnectException {
+            String url1 = "ws://localhost:8546/";
+ //           HttpService httpService = new HttpService(url1, true);
+  //          WebSocketService webSocketService = new WebSocketService();
+  //         web3j = Web3j.build(httpService, 36000, scheduledExecutorService);  // defaults to http://localhost:8545/
 
-            web3j = Web3j.build(new HttpService());  // defaults to http://localhost:8545/
+            // Connection to the node
+            WebSocketService web3jService = new WebSocketService(url1, true);
+            web3jService.connect();
+            web3j = Web3j.build(web3jService);
         }
 
         private void run() throws Exception {
@@ -75,6 +85,7 @@ public class listenForBlocks {
             //find out what is the difference between true & false
             //the false parameter specifies that we only want the blocks, not the embedded transactions too
             Subscription subscription = web3j.blockObservable(false).subscribe(block -> { //This blockObservable will now emit a block object to the subscriber each time a new block is appended to the Ethereum blockchain.
+               log.info("Block size ={} blockNo ={} block# ={} txnCount ={}", block.getResult().getSize(), block.getBlock().getNumber(), block.getBlock().getHash());
                 log.info("Sweet, block number " + block.getBlock().getNumber()
                         + " has just been created");
             }, Throwable::printStackTrace);
@@ -91,10 +102,19 @@ public class listenForBlocks {
             Subscription subscription = web3j.blockObservable(true)
                     .take(COUNT)
                     .subscribe(ethBlock -> {
+
+                       log.info("Block result:", ethBlock.getResult());
                         EthBlock.Block block = ethBlock.getBlock();
+
+                        log.info("Using observables true--------------------------------------");
+                        log.info("Block size ={} blockNo ={} block# ={} txnCount ={} nonce ={} extraData ={} gasLimit ={} difficulty ={} parentHash ={} gasUsed ={}", block.getSize(), block.getNumber(), block.getHash(), block.getTransactions().size(), block.getNonce(), block.getExtraData(), block.getGasLimit(),  block.getDifficulty(), block.getParentHash(), block.getGasUsed());
+                        log.info("Transaction list ={}", block.getTransactions());
                         LocalDateTime timestamp = Instant.ofEpochSecond(//instant represents current time, An Instant counts the time beginning from the first second of January 1, 1970 (1970-01-01 00:00:00) also called the EPOCH.
                                 block.getTimestamp()
                                         .longValueExact()).atZone(ZoneId.of("UTC")).toLocalDateTime();//Coordinated Universal Time (UTC)
+                       log.info("miner",block.getMiner());
+                        block.getAuthor();
+                        log.info("author", block.getMiner());
                         int transactionCount = block.getTransactions().size();
 //                        String author = block.getAuthor();
 //                        String miner = block.getMiner();
@@ -111,6 +131,7 @@ public class listenForBlocks {
                         String hash = block.getHash();
                         log.info("getting timestamp::::::::::::::::::" + timestamp);
                         String parentHash = block.getParentHash();
+
 
                         log.info(
                                 timestamp + " " +

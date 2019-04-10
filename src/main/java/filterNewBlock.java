@@ -19,22 +19,23 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.websocket.WebSocketService;
+import rx.Subscription;
 
 import java.net.ConnectException;
+import java.util.List;
 import java.util.concurrent.Executors;
 
-public class listenPendingTransaction {
+public class filterNewBlock {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(listenPendingTransaction.class);
+    private static final Logger log = LoggerFactory.getLogger(filterNewBlock.class);
 
     public static void main(String[] args) throws ConnectException {
-        new listenPendingTransaction().run();
+        new filterNewBlock().run();
     }
 
     private void run() throws ConnectException {
-
-        //        Web3j web3j = Web3j.build(new HttpService());
 
         String url1 = "ws://localhost:8546/";
         long pollingInterval = 30000;
@@ -42,12 +43,18 @@ public class listenPendingTransaction {
         web3jService.connect();
         Web3j web3j = Web3j.build(web3jService, pollingInterval, Executors.newSingleThreadScheduledExecutor());
 
-         web3j.pendingTransactionObservable().subscribe(tx -> {
- //           tx.notifyAll();
-            LOGGER.info("New tx: id={}, block={}, from={}, to={}, value={}", tx.getHash(), tx.getBlockHash(), tx.getFrom(), tx.getTo(), tx.getValue().intValue());
 
-        });
+
+        Subscription subscription = web3j.blockObservable(true)
+                .subscribe(ethBlock -> {
+                    EthBlock.Block block = ethBlock.getBlock();
+                    //sourceEventListener.onEvent(json message);
+                    log.info("Block size ={} blockNo ={} block# ={} txnCount ={} nonce ={} extraData ={} gasLimit ={} difficulty ={} parentHash ={} gasUsed ={}", block.getSize(), block.getNumber(), block.getHash(), block.getTransactions().size(), block.getNonce(), block.getExtraData(), block.getGasLimit(),  block.getDifficulty(), block.getParentHash(), block.getGasUsed());
+                });
+
+        web3j.blockObservable(true)
+                .flatMapIterable(ethBlock -> (List)
+                        ethBlock.getBlock().getTransactions());
 
     }
-
 }
